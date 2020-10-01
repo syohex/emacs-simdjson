@@ -4,6 +4,7 @@
 
 ## Requirements
 
+- C++ compiler(supports C++ 17)
 - Emacs 27 or higher(configured with `--with-modules`)
 
 ## Interfaces
