@@ -13,6 +13,44 @@
 
 Parse JSON `string` and return Emacs Lisp objects.
 
+## Benchmark
+
+`json-read-from-string`(native support) vs `simdjson`
+
+Test environment
+- Intel Core i7-8565U 1.80GHz
+- Memory 24GB
+- Ubuntu 20.04
+- GCC 9.3.0
+
+```lisp
+(require 'url)
+(require 'url-http)
+(require 'benchmark)
+(require 'json)
+(require 'simdjson)
+
+(defconst twitter-json-url
+  "https://raw.githubusercontent.com/simdjson/simdjson/master/jsonexamples/twitter.json")
+
+(defun get-twitter-json ()
+  (with-current-buffer (url-retrieve-synchronously twitter-json-url)
+    (goto-char url-http-end-of-headers)
+    (buffer-substring-no-properties
+     (point) (point-max))))
+
+(defvar twitter-json-string (get-twitter-json))
+
+(benchmark-run-compiled 100
+  (json-read-from-string twitter-json-string))
+;; => (11.333750749 950 6.756950825)
+
+(benchmark-run-compiled 100
+  (simdjson-parse twitter-json-string))
+;; => (6.908951915 746 6.405641993000001)
+```
+
+
 ## Conversion Rule
 
 | JSON                     | Emacs Lisp   |
