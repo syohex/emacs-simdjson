@@ -41,14 +41,28 @@ Test environment
 
 (defvar twitter-json-string (get-twitter-json))
 
+;; elisp
 (benchmark-run-compiled 100
   (json-read-from-string twitter-json-string))
-;; => (11.333750749 950 6.756950825)
+;; => (11.859395746999999 950 7.268225878)
 
+;; jansson
+(benchmark-run-compiled 100
+  (json-parse-string twitter-json-string))
+;; (2.1292452890000004 100 0.925590689999999)
+
+;; This binding
 (benchmark-run-compiled 100
   (simdjson-parse twitter-json-string))
-;; => (6.908951915 746 6.405641993000001)
+;; => (7.14668513 740 6.646881686)
 ```
+
+### Consideration
+
+Converting parse result into Emacs lisp object is very slow.
+
+- Parsing twitter.json time with simdjson 3096us
+- Convert its result into Emacs Lisp Object 87561us
 
 
 ## Conversion Rule

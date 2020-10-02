@@ -19,4 +19,7 @@
   (json-read-from-string twitter-json-string))
 
 (benchmark-run-compiled 100
+  (json-parse-string twitter-json-string))
+
+(benchmark-run-compiled 100
   (simdjson-parse twitter-json-string))
